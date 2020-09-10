@@ -256,7 +256,7 @@ class Network:
     def __getstate__(self) -> dict:
         """Pickle export."""
         state = dict()
-        state["version"]            = 3
+        state["version"]            = 4
         state["name"]               = self.name
         state["static_kwargs"]      = dict(self.static_kwargs)
         state["components"]         = dict(self.components)
@@ -276,7 +276,7 @@ class Network:
             state = handler(state)
 
         # Set basic fields.
-        assert state["version"] in [2, 3]
+        assert state["version"] in [2, 3, 4]
         self.name = state["name"]
         self.static_kwargs = util.EasyDict(state["static_kwargs"])
         self.components = util.EasyDict(state.get("components", {}))
