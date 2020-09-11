@@ -188,14 +188,6 @@ def get_resnext_model(save_path, model_res=1024, image_size=256, depth=2, size=0
     for _ in range(1, depth_list[1]):
         resnext = bottleneck_block(resnext, 256, cardinality, strides=1, weight_decay=weight_decay)
 
-    """ resnext = bottleneck_block(resnext, 512, cardinality, strides=2, weight_decay=weight_decay)
-    for _ in range(1, depth_list[2]):
-        resnext = bottleneck_block(resnext, 512, cardinality, strides=1, weight_decay=weight_decay)
-
-    resnext = bottleneck_block(resnext, 1024, cardinality, strides=2, weight_decay=weight_decay)
-    for _ in range(1, depth_list[3]):
-        resnext = bottleneck_block(resnext, 1024, cardinality, strides=1, weight_decay=weight_decay) """
-
     layer_size = model_scale*8*8*8
     if is_square(layer_size): # work out layer dimensions
         layer_l = int(math.sqrt(layer_size)+0.5)
@@ -209,6 +201,23 @@ def get_resnext_model(save_path, model_res=1024, image_size=256, depth=2, size=0
 
     x_init = None
     x = resnext
+
+    if (depth < 0):
+        depth = 1
+
+    if (size <= 1):
+        if (size <= 0):
+            x = Conv2D(model_scale*8, 1, activation=activation)(x) # scale down
+            x = Reshape((layer_r, layer_l))(x)
+        else:
+            x = Conv2D(model_scale*8*4, 1, activation=activation)(x) # scale down a little
+            x = Reshape((layer_r*2, layer_l*2))(x)
+    else:
+	if (size == 2):
+            x = Conv2D(1024, 1, activation=activation)(x) # scale down a bit
+            x = Reshape((256, 256))(x)
+        else:
+            x = Reshape((256, 512))(x) # all weights used
 
     while (depth > 0): # See https://github.com/OliverRichter/TreeConnect/blob/master/cifar.py - TreeConnect inspired layers instead of dense layers.
         x = LocallyConnected1D(layer_r, 1, activation=activation)(x)
