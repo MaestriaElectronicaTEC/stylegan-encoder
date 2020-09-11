@@ -159,9 +159,9 @@ def main():
                     ff_model = load_model(args.load_effnet)
             if (ff_model is not None): # predict initial dlatents with ResNet model
                 if (args.use_preprocess_input):
-                    dlatents = ff_model.predict(preprocess_input(load_images(images_batch,image_size=args.resnet_image_size)))
+                    dlatents = ff_model.predict(preprocess_input(load_images(images_batch,image_size=args.resnet_image_size).astype('float64') ))
                 else:
-                    dlatents = ff_model.predict(load_images(images_batch,image_size=args.resnet_image_size))
+                    dlatents = ff_model.predict(load_images(images_batch,image_size=args.resnet_image_size).astype('float64') )
         if dlatents is not None:
             generator.set_dlatents(dlatents)
         op = perceptual_model.optimize(generator.dlatent_variable, iterations=args.iterations, use_optimizer=args.optimizer)

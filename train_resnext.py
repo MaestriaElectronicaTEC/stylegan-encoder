@@ -188,13 +188,13 @@ def get_resnext_model(save_path, model_res=1024, image_size=256, depth=2, size=0
     for _ in range(1, depth_list[1]):
         resnext = bottleneck_block(resnext, 256, cardinality, strides=1, weight_decay=weight_decay)
 
-    resnext = bottleneck_block(resnext, 512, cardinality, strides=2, weight_decay=weight_decay)
+    """ resnext = bottleneck_block(resnext, 512, cardinality, strides=2, weight_decay=weight_decay)
     for _ in range(1, depth_list[2]):
         resnext = bottleneck_block(resnext, 512, cardinality, strides=1, weight_decay=weight_decay)
 
     resnext = bottleneck_block(resnext, 1024, cardinality, strides=2, weight_decay=weight_decay)
     for _ in range(1, depth_list[3]):
-        resnext = bottleneck_block(resnext, 1024, cardinality, strides=1, weight_decay=weight_decay)
+        resnext = bottleneck_block(resnext, 1024, cardinality, strides=1, weight_decay=weight_decay) """
 
     layer_size = model_scale*8*8*8
     if is_square(layer_size): # work out layer dimensions
