@@ -210,23 +210,6 @@ def get_resnext_model(save_path, model_res=1024, image_size=256, depth=2, size=0
     x_init = None
     x = resnext
 
-    if (depth < 0):
-        depth = 1
-
-    if (size <= 1):
-        if (size <= 0):
-            x = Conv2D(model_scale*8, 1, activation=activation)(x) # scale down
-            x = Reshape((layer_r, layer_l))(x)
-        else:
-            x = Conv2D(model_scale*8*4, 1, activation=activation)(x) # scale down a little
-            x = Reshape((layer_r*2, layer_l*2))(x)
-    else:
-        if (size == 2):
-            x = Conv2D(1024, 1, activation=activation)(x) # scale down a bit
-            x = Reshape((256, 256))(x)
-        else:
-            x = Reshape((256, 512))(x) # all weights used
-
     while (depth > 0): # See https://github.com/OliverRichter/TreeConnect/blob/master/cifar.py - TreeConnect inspired layers instead of dense layers.
         x = LocallyConnected1D(layer_r, 1, activation=activation)(x)
         x = Permute((2, 1))(x)
