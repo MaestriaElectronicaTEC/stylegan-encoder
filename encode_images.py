@@ -54,6 +54,7 @@ def main():
     parser.add_argument('--early_stopping_patience', default=10, help='Number of iterations to wait below threshold', type=int)    
     parser.add_argument('--load_effnet', default='data/finetuned_effnet.h5', help='Model to load for EfficientNet approximation of dlatents')
     parser.add_argument('--load_resnet', default='data/finetuned_resnet.h5', help='Model to load for ResNet approximation of dlatents')
+    parser.add_argument('--load_resnext', default='data/finetuned_resnext.h5', help='Model to load for ResNext approximation of dlatents')
     parser.add_argument('--use_preprocess_input', default=True, help='Call process_input() first before using feed forward net', type=str2bool, nargs='?', const=True)
     parser.add_argument('--use_best_loss', default=True, help='Output the lowest loss value found as the solution', type=str2bool, nargs='?', const=True)
     parser.add_argument('--average_best_loss', default=0.25, help='Do a running weighted average with the previous best dlatents found', type=float)
@@ -157,6 +158,11 @@ def main():
                     from efficientnet import preprocess_input
                     print("Loading EfficientNet Model:")
                     ff_model = load_model(args.load_effnet)
+            if (ff_model is None):
+                if os.path.exists(args.load_resnext):
+                    from keras.applications.resnet50 import preprocess_input
+                    print('Loading ResNext Model:')
+                    ff_model = load_model(args.load_resnext)
             if (ff_model is not None): # predict initial dlatents with ResNet model
                 if (args.use_preprocess_input):
                     dlatents = ff_model.predict(preprocess_input(load_images(images_batch,image_size=args.resnet_image_size).astype('float64') ))
