@@ -313,7 +313,7 @@ if args.use_fp16:
 
 tflib.init_tf()
 
-model = get_resnext_model(args.model_path, model_res=args.model_res, depth=args.model_depth, size=args.model_size, activation=args.activation, optimizer=args.optimizer, loss=args.loss)
+model = get_resnext_model(args.model_path, model_res=args.model_res, image_size=args.image_size, depth=args.model_depth, size=args.model_size, activation=args.activation, optimizer=args.optimizer, loss=args.loss)
 
 with dnnlib.util.open_url(args.model_url, cache_dir=config.cache_dir) as f:
     generator_network, discriminator_network, Gs_network = pickle.load(f)
